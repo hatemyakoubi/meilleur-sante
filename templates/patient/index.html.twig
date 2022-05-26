@@ -1,0 +1,90 @@
+{% extends 'bars.html.twig' %}
+
+
+{% block contentpage %}
+<div class="">
+	<div class="page-title">
+		<div class="title_left"></div>
+	</div>
+
+	<div class="clearfix"></div>
+
+	<div class="row">
+		<div class="col-md-12">
+			<div class="x_panel">
+				<div class="x_title">
+					<h2>
+						Listes des patients
+					</h2>
+					<ul class="nav navbar-right panel_toolbox">
+						<li>
+							<a href="{{path('app_patient_new')}}" class="btn btn-success">Nouveau patient</a>
+						</li>
+					</ul>
+					<div class="clearfix"></div>
+				</div>
+				<div class="x_content">
+					<div class="row">
+
+						<table id="example" class="display table table-striped table-bordered dataminetables">
+							<thead>
+								<tr>
+									<th>
+										ID
+									</th>
+									<th>
+										Identification
+									</th>
+									<th>
+										Nom & Prénom
+									</th>
+									<th>
+										Sexe
+									</th>
+									<th>
+										Age
+									</th>
+									<th>
+										Localisation
+									</th>
+									<th>
+										Action
+									</th>
+								</tr>
+							</thead>
+							<tbody>
+								{% for patient in patients %}
+									<tr>
+										<td>
+											{{patient.id}}</td>
+										<td>
+											{{patient.identificaion}}
+										</td>
+										<td>
+											{{patient.nomComplet}}
+										</td>
+										<td>{{patient.sexe}}
+										</td>
+										<td>
+											{{patient.age}}
+										</td>
+										<td>
+											{{patient.localisation}}
+										</td>
+										<td>
+                                            <a href="{{path('app_patient_show',{'id':patient.id})}}" class="btn btn-success"><i class="fa fa-eye"></i></a>
+                                            <a href="{{path('app_patient_edit',{'id':patient.id})}}" class="btn btn-warning"><i class="fa fa-edit"></i></a>
+                                        </td>
+									</tr>
+								{% endfor %}
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+{% endblock %}

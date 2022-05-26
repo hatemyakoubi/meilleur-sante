@@ -1,0 +1,135 @@
+{% extends 'bars.html.twig' %}
+
+
+
+{% block title %}Patient{% endblock %}
+
+{% block contentpage %}
+    <div class="row">
+
+                <div class="col-md-12 col-sm-12 ">
+                    <div class="x_panel">
+                    <div class="x_title">
+                       
+                        <h5><a href="{{ path('app_patient_index') }}">Liste des patients</a> >> Rapport patient N° {{ patient.id }}</h5>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="x_content">
+                        <div class="col-md-3 col-sm-3  profile_left">
+                        <div class="profile_img">
+                            <div id="crop-avatar">
+                            <!-- Current avatar -->
+                            <img class="img-responsive avatar-view" src="{{asset('images/profile-logo.png')}}" alt="Avatar" title="Change the avatar">
+                            </div>
+                        </div>
+                        <h3>{{ patient.nomComplet }}</h3>
+
+                        <ul class="list-unstyled user_data">
+                            <li><i class="fa fa-map-marker user-profile-icon"></i> {{ patient.localisation }}
+                            </li>
+
+                            <li>
+                            <i class="fas fa-folder"></i></i> {{ patient.identificaion }}
+                            </li>
+
+                            <li class="m-top-xs">
+                            <i class="fas fa-venus user-profile-icon"></i>
+                            {{ patient.sexe }} , {{ patient.age }} ans
+                            </li>
+                        </ul>
+
+                        <a href="{{ path('app_patient_edit', {'id': patient.id}) }}" class="btn btn-success"><i class="fa fa-edit m-right-xs"></i>Modifier</a>
+                        <br />
+
+
+                        </div>
+                        <div class="col-md-9 col-sm-9 ">
+                            <div id="graph_bar" style="width:30%; height:180px;"> 
+                                <div class="heart"></div>
+                                <div style="font-size: 50px;margin-top: 15px; margin-left: 120px;">
+                                {{ patient.pouls }} <i class="fas fa-heart-rate"></i>
+                                </div>
+                            </div>
+                            <div class="" role="tabpanel" data-example-id="togglable-tabs">
+                                <!-- <ul id="myTab" class="nav nav-tabs bar_tabs" role="tablist">
+                                <li role="presentation" class="active"><a href="#tab_content1" id="home-tab" role="tab" data-toggle="tab" aria-expanded="true">Température</a>
+                                </li>
+                                <li role="presentation" class=""><a href="#tab_content2" role="tab" id="profile-tab" data-toggle="tab" aria-expanded="false">Oxygène</a>
+                                </li>
+                                <li role="presentation" class=""><a href="#tab_content3" role="tab" id="profile-tab2" data-toggle="tab" aria-expanded="false">Profile</a>
+                                </li>
+                                </ul> -->
+                                <!-- <div id="myTabContent" class="tab-content">
+                                    <div role="tabpanel" class="tab-pane active " id="tab_content1" aria-labelledby="home-tab">
+                                        <canvas id="temperature" width="400" height="100"></canvas>
+                                    </div>
+                                    <div role="tabpanel" class="tab-pane fade" id="tab_content2" aria-labelledby="profile-tab">
+                                        <canvas id="oxygene" width="400" height="100"></canvas>
+                                    </div>
+                                    <div role="tabpanel" class="tab-pane fade" id="tab_content3" aria-labelledby="profile-tab">
+                                        <p>xxFood truck fixie locavore, accusamus mcsweeney's marfa nulla single-origin coffee squid. Exercitation +1 labore velit, blog sartorial PBR leggings next level wes anderson artisan four loko farm-to-table craft beer twee. Qui
+                                        photo booth letterpress, commodo enim craft beer mlkshk </p>
+                                    </div>
+                                </div> -->
+                                <hr>
+                                <div>
+                                    <canvas id="oxygene" width="400" height="100"></canvas>
+                                </div>
+                                <div>
+                                    <canvas id="temperature" width="400" height="100" ></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+                
+    </div>
+ {% endblock %}
+ {% block javascripts %}
+    <!-- Bootstrap -->
+    <script src="{{ asset('vendors/bootstrap/dist/js/bootstrap.bundle.min.js')}}"></script>
+    <!-- Custom Theme Scripts -->
+    <script src="{{ asset('build/js/custom.min.js')}}"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js" integrity="sha512-s+xg36jbIujB2S2VKfpGmlC3T5V2TF3lY48DX7u2r9XzGzgPsa6wTpOQA7J9iffvdeBN0q9tKzRxVxw1JviZPg==" crossorigin="anonymous"></script>
+     <script>
+    var ctx1 = document.getElementById('temperature').getContext('2d');
+    var temperature = new Chart(ctx1, {
+        type: 'line',
+        //type: 'pie',
+        data: {
+             labels: {{IntervalleTemp|raw}},
+            datasets: [{
+                label: 'Température °C ',
+                data: {{IntervalleTemp|raw}},
+                borderColor: 'rgb(75, 192, 192)',
+                //tension: 0.1
+            }]
+        }
+    });
+    </script>
+    <script>
+   
+    var ctx2 = document.getElementById('oxygene').getContext('2d');
+    var oxygene = new Chart(ctx2, {
+        //type: 'line',
+        type: 'radar',
+        data: {
+            labels: {{IntervalleOxygene|raw}},
+            datasets: [{
+                label: 'Oxygène %',
+                data: {{IntervalleOxygene|raw}},
+                //fill: false,
+                borderColor: 'rgb(75, 192, 192)',
+                //tension: 0.1
+            }]
+        }
+    });
+    </script>
+  
+ {% endblock %}
+
+
+ 
+    

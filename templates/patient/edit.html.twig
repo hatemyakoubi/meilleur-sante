@@ -1,0 +1,13 @@
+{% extends 'bars.html.twig' %}
+
+{% block title %}Edit Patient{% endblock %}
+
+{% block contentpage %}
+    <h1>Modifier Patient</h1>
+
+    {{ include('patient/_form.html.twig') }}
+
+   
+
+    {{ include('patient/_delete_form.html.twig') }}
+{% endblock %}
