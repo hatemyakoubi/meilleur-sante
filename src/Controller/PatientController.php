@@ -3,12 +3,15 @@
 namespace App\Controller;
 
 use App\Entity\Patient;
+use App\Entity\User;
 use App\Form\PatientType;
 use App\Repository\PatientRepository;
+use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 /**
@@ -19,12 +22,30 @@ class PatientController extends AbstractController
     /**
      * @Route("/", name="app_patient_index", methods={"GET"})
      */
-    public function index(EntityManagerInterface $entityManager): Response
+    public function index(PatientRepository $patientRepository,UserRepository $userRepository): Response
     {
-        $patients = $entityManager
-            ->getRepository(Patient::class)
-            ->findAll();
-
+        $userConnecter = $this->getUser();
+       $id= $this->getUser()->getId();
+      // dd($userConnecter);
+        $patients=[];
+        // if ($userConnecter->getRoles()=="ROLE_ADMIN") {
+            if ($this->isGranted('ROLE_ADMIN')){
+            $patients = $patientRepository->findAll();
+        }
+        else{
+            $user = $userRepository->find($id);
+            foreach ($user->getPatients() as $p  ) {
+                $patients[]= [
+                    'id'=> $p->getId(),
+                    'identificaion'=> $p->getIdentificaion(),
+                    'nomComplet'=> $p->getNomComplet(),
+                    'sexe'=> $p->getSexe(),
+                    'age'=> $p->getAge(),
+                    'localisation'=> $p->getLocalisation(),
+                ];
+            }
+           
+        }
         return $this->render('patient/index.html.twig', [
             'patients' => $patients,
         ]);
@@ -32,6 +53,7 @@ class PatientController extends AbstractController
 
     /**
      * @Route("/new", name="app_patient_new", methods={"GET", "POST"})
+     * @IsGranted("ROLE_USER")
      */
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
@@ -40,6 +62,7 @@ class PatientController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $patient->setUser($this->getUser());
             $entityManager->persist($patient);
             $entityManager->flush();
 
@@ -87,6 +110,8 @@ class PatientController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $patient->setUser($this->getUser());
+            $entityManager->persist($patient);
             $entityManager->flush();
 
             return $this->redirectToRoute('app_patient_index', [], Response::HTTP_SEE_OTHER);

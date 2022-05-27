@@ -1,18 +1,26 @@
 {% extends 'bars.html.twig' %}
 
-{% block title %}Edit User{% endblock %}
+{% block title %}Modifier profile {% endblock %}
 
 {% block contentpage %}
     <h1>Modifier profile</h1>
 
-    {{ include('user/_form.html.twig') }}
+    <div class="clearfix"></div>
 
-    <div class="item form-group">
-        <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
-            <a class="btn btn-warning" href="{{ path('app_patient_index') }}">Annuler</a>
-            <button type="submit" name="valider" class="btn btn-success">Enregistrer</button>
-            {{ include('user/_delete_form.html.twig') }}
+    <div class="row">
+        <div class="col-md-12 col-sm-12 col-xs-12">
+            <div class="x_panel">
+                <div class="x_title">
+                    <h2>Docteur</h2>
+                    
+                    <div class="clearfix"></div>
+                </div>
+                <div class="x_content">
+                        {{ include('user/_form.html.twig') }}
+                </div>
+            </div>
         </div>
     </div>
+    
 
 {% endblock %}

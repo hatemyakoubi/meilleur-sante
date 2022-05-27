@@ -1,9 +1,12 @@
-{% extends 'base.html.twig' %}
+{% extends 'bars.html.twig' %}
 
-{% block title %}User{% endblock %}
 
-{% block body %}
-    <h1>User</h1>
+
+{% block title %}Détail utilisateur{% endblock %}
+
+{% block contentpage %}
+    <div class="row">
+    <h1>Détail utilisateur</h1>
 
     <table class="table">
         <tbody>
@@ -12,23 +15,40 @@
                 <td>{{ user.id }}</td>
             </tr>
             <tr>
+                <th>Nom</th>
+                <td>{{ user.nom }}</td>
+            </tr>
+            <tr>
+                <th>Prénom</th>
+                <td>{{ user.prenom }}</td>
+            </tr>
+            <tr>
                 <th>Email</th>
                 <td>{{ user.email }}</td>
             </tr>
             <tr>
                 <th>Roles</th>
-                <td>{{ user.roles ? user.roles|json_encode : '' }}</td>
+                <td>
+
+                    {% for role in user.roles %}
+                        {% if role == "ROLE_USER" %}
+                            <li> Utilisateur </li>                                           
+                        {% elseif role == "ROLE_ADMIN" %}
+                            <li> Administrateur </li>
+                        {% endif %}
+                    {% endfor %}
+                </td>
             </tr>
-            <tr>
+            <!-- <tr>
                 <th>Password</th>
                 <td>{{ user.password }}</td>
-            </tr>
+            </tr> -->
         </tbody>
     </table>
 
-    <a href="{{ path('app_user_index') }}">back to list</a>
+    <a href="{{ path('app_user_index') }}" class="btn btn-primary">Retour à la liste</a>
 
-    <a href="{{ path('app_user_edit', {'id': user.id}) }}">edit</a>
+    <a href="{{ path('app_user_edit', {'id': user.id}) }}"class="btn btn-success">Modifier</a>
 
     {{ include('user/_delete_form.html.twig') }}
 {% endblock %}

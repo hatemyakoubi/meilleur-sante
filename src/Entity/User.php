@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -45,6 +47,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     private $prenom;
 
+    /**
+     * @ORM\OneToMany(targetEntity=Patient::class, mappedBy="user")
+     */
+    private $patients;
+
+    public function __construct()
+    {
+        $this->roles = ['ROLE_USER'];
+        $this->patients = new ArrayCollection();
+    }
+    
     public function getId(): ?int
     {
         return $this->id;
@@ -160,6 +173,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setPrenom(string $prenom): self
     {
         $this->prenom = $prenom;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Patient>
+     */
+    public function getPatients(): Collection
+    {
+        return $this->patients;
+    }
+
+    public function addPatient(Patient $patient): self
+    {
+        if (!$this->patients->contains($patient)) {
+            $this->patients[] = $patient;
+            $patient->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removePatient(Patient $patient): self
+    {
+        if ($this->patients->removeElement($patient)) {
+            // set the owning side to null (unless already changed)
+            if ($patient->getUser() === $this) {
+                $patient->setUser(null);
+            }
+        }
 
         return $this;
     }

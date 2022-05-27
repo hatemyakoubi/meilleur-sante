@@ -1,11 +1,37 @@
-{% extends 'base.html.twig' %}
+{% extends 'bars.html.twig' %}
 
-{% block title %}New User{% endblock %}
+{% block contentpage %}
+    <div class="">
+        <div class="page-title">
+            <div class="title_left">
+                <h5><a href="{{ path('app_user_index') }}">Liste des docteurs</a> >> Nouveau docteur</h5>
+            </div>
+        </div>
 
-{% block body %}
-    <h1>Create new User</h1>
+        <div class="clearfix"></div>
 
-    {{ include('user/_form.html.twig') }}
-
-    <a href="{{ path('app_user_index') }}">back to list</a>
+        <div class="row">
+            <div class="col-md-12 col-sm-12 col-xs-12">
+                <div class="x_panel">
+                    <div class="x_title">
+                        <h2>Docteur</h2>
+                        
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="x_content">
+                        {{ form_start(form) }}
+                        {{ form_widget(form) }}
+                        <div class="ln_solid"></div>
+                        <div class="item form-group">
+                            <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
+                                <a class="btn btn-warning" href="{{ path('app_patient_index') }}">Annuler</a>
+                                <button type="submit" name="valider" class="btn btn-success">Enregistrer</button>
+                            </div>
+                        </div>
+                        {{ form_end(form) }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}

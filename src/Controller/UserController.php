@@ -11,6 +11,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
@@ -21,6 +22,7 @@ class UserController extends AbstractController
 {
     /**
      * @Route("/", name="app_user_index", methods={"GET"})
+     * @IsGranted("ROLE_ADMIN")
      */
     public function index(EntityManagerInterface $entityManager): Response
     {
@@ -35,14 +37,17 @@ class UserController extends AbstractController
 
     /**
      * @Route("/new", name="app_user_new", methods={"GET", "POST"})
+     * @IsGranted("ROLE_ADMIN")
      */
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    public function new(Request $request, EntityManagerInterface $entityManager,UserPasswordEncoderInterface $passwordEncoder): Response
     {
         $user = new User();
         $form = $this->createForm(UserType::class, $user);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $encoded = $passwordEncoder->encodePassword($user, $form->get("password")->getData());
+            $user->setPassword($encoded);
             $entityManager->persist($user);
             $entityManager->flush();
 
@@ -70,12 +75,15 @@ class UserController extends AbstractController
      */
     public function edit(Request $request, User $user, EntityManagerInterface $entityManager): Response
     {
-       $password = $user->getPassword();
-        $form = $this->createForm(EditUserType::class, $user);
+         $password = $user->getPassword();
+        //  if ($this->isGranted('ROLE_ADMIN')) {    
+         $form = $this->createForm(UserType::class, $user);    
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            dd();
             $user->setPassword($password);
+            $entityManager->persist($user);
             $entityManager->flush();
             $this->addFlash('success', 'Modification réussite');
 
